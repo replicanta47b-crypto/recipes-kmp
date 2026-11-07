@@ -15,6 +15,10 @@
     <string name="onboarding_favorites_title">Зберігайте улюблене</string>
     <string name="onboarding_favorites_description">Позначайте страви, які вам сподобались, і повертайтеся до них будь-коли.</string>
 
+    <string name="onboarding_badge_world">Смаки світу</string>
+    <string name="onboarding_badge_dishes">50 страв</string>
+    <string name="onboarding_badge_time">25 хв</string>
+
     <string name="home_title">Рецепти</string>
     <string name="home_placeholder">Рецепти з API будуть тут у наступній лабораторній.</string>
     <string name="home_show_intro">Показати вступ ще раз</string>

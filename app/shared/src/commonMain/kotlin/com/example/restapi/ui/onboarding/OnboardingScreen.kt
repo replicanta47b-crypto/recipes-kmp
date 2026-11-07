@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
@@ -21,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -39,6 +42,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import restapi.app.shared.generated.resources.Res
+import restapi.app.shared.generated.resources.ic_arrow_forward
 import restapi.app.shared.generated.resources.onboarding_next
 import restapi.app.shared.generated.resources.onboarding_page_indicator
 import restapi.app.shared.generated.resources.onboarding_skip
@@ -80,7 +84,10 @@ fun OnboardingScreen(
                     log.i { "Onboarding skipped on slide ${pagerState.currentPage + 1}" }
                     onFinished()
                 }) {
-                    Text(stringResource(Res.string.onboarding_skip))
+                    Text(
+                        stringResource(Res.string.onboarding_skip),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
         }
@@ -97,7 +104,7 @@ fun OnboardingScreen(
         Spacer(Modifier.height(24.dp))
 
         Button(
-            modifier = Modifier.fillMaxWidth().height(52.dp),
+            modifier = Modifier.fillMaxWidth().height(56.dp),
             onClick = {
                 if (isLastPage) {
                     log.i { "Onboarding finished" }
@@ -111,6 +118,12 @@ fun OnboardingScreen(
                 stringResource(if (isLastPage) Res.string.onboarding_start else Res.string.onboarding_next),
                 style = MaterialTheme.typography.labelLarge,
             )
+            Spacer(Modifier.width(8.dp))
+            Icon(
+                painter = painterResource(Res.drawable.ic_arrow_forward),
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+            )
         }
     }
 }
@@ -122,21 +135,45 @@ private fun OnboardingSlideContent(slide: OnboardingSlide) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Box(
-            modifier = Modifier
-                .size(160.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                painter = painterResource(slide.icon),
-                contentDescription = null,
-                modifier = Modifier.size(80.dp),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+        Box(modifier = Modifier.size(208.dp), contentAlignment = Alignment.Center) {
+            // Outer soft ring + inner circle, as in the Stitch design.
+            Box(
+                modifier = Modifier
+                    .size(208.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f)),
             )
+            Box(
+                modifier = Modifier
+                    .size(184.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    painter = painterResource(slide.icon),
+                    contentDescription = null,
+                    modifier = Modifier.size(88.dp),
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            }
+            slide.badge?.let { badge ->
+                Surface(
+                    modifier = Modifier.align(Alignment.BottomEnd).offset(x = 20.dp, y = 6.dp),
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.surfaceContainerLowest,
+                    shadowElevation = 3.dp,
+                ) {
+                    Text(
+                        text = stringResource(badge),
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.secondary,
+                    )
+                }
+            }
         }
-        Spacer(Modifier.height(40.dp))
+        Spacer(Modifier.height(48.dp))
         Text(
             text = stringResource(slide.title),
             style = MaterialTheme.typography.headlineMedium,

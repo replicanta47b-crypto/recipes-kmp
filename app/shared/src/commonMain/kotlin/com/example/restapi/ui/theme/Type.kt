@@ -3,8 +3,11 @@ package com.example.restapi.ui.theme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.Font
 import restapi.app.shared.generated.resources.Res
 import restapi.app.shared.generated.resources.inter_bold
@@ -24,27 +27,34 @@ fun appFontFamily(): FontFamily {
     }
 }
 
+/** Type scale from docs/design/DESIGN.md (display-lg, headline-*, title-md, body-*, label-*). */
 @Composable
 fun appTypography(): Typography {
     val family = appFontFamily()
     return remember(family) {
-        val base = Typography()
+        fun style(size: Int, line: Int, weight: FontWeight, spacing: Float = 0f) = TextStyle(
+            fontFamily = family,
+            fontSize = size.sp,
+            lineHeight = line.sp,
+            fontWeight = weight,
+            letterSpacing = spacing.em,
+        )
         Typography(
-            displayLarge = base.displayLarge.copy(fontFamily = family),
-            displayMedium = base.displayMedium.copy(fontFamily = family),
-            displaySmall = base.displaySmall.copy(fontFamily = family),
-            headlineLarge = base.headlineLarge.copy(fontFamily = family, fontWeight = FontWeight.Bold),
-            headlineMedium = base.headlineMedium.copy(fontFamily = family, fontWeight = FontWeight.Bold),
-            headlineSmall = base.headlineSmall.copy(fontFamily = family, fontWeight = FontWeight.SemiBold),
-            titleLarge = base.titleLarge.copy(fontFamily = family, fontWeight = FontWeight.SemiBold),
-            titleMedium = base.titleMedium.copy(fontFamily = family, fontWeight = FontWeight.Medium),
-            titleSmall = base.titleSmall.copy(fontFamily = family, fontWeight = FontWeight.Medium),
-            bodyLarge = base.bodyLarge.copy(fontFamily = family),
-            bodyMedium = base.bodyMedium.copy(fontFamily = family),
-            bodySmall = base.bodySmall.copy(fontFamily = family),
-            labelLarge = base.labelLarge.copy(fontFamily = family, fontWeight = FontWeight.SemiBold),
-            labelMedium = base.labelMedium.copy(fontFamily = family, fontWeight = FontWeight.Medium),
-            labelSmall = base.labelSmall.copy(fontFamily = family, fontWeight = FontWeight.Medium),
+            displayLarge = style(40, 48, FontWeight.Bold, -0.02f),
+            displayMedium = style(34, 42, FontWeight.Bold, -0.02f),
+            displaySmall = style(28, 36, FontWeight.Bold, -0.015f),
+            headlineLarge = style(32, 40, FontWeight.Bold, -0.015f),
+            headlineMedium = style(26, 34, FontWeight.Bold, -0.01f),
+            headlineSmall = style(20, 28, FontWeight.SemiBold),
+            titleLarge = style(24, 32, FontWeight.SemiBold, -0.01f),
+            titleMedium = style(16, 24, FontWeight.SemiBold, 0.005f),
+            titleSmall = style(14, 20, FontWeight.SemiBold, 0.005f),
+            bodyLarge = style(17, 26, FontWeight.Normal),
+            bodyMedium = style(15, 22, FontWeight.Normal),
+            bodySmall = style(13, 18, FontWeight.Normal),
+            labelLarge = style(14, 20, FontWeight.SemiBold, 0.01f),
+            labelMedium = style(12, 16, FontWeight.Medium, 0.02f),
+            labelSmall = style(11, 14, FontWeight.Medium, 0.03f),
         )
     }
 }

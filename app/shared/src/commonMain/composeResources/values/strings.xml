@@ -15,6 +15,10 @@
     <string name="onboarding_favorites_title">Save your favourites</string>
     <string name="onboarding_favorites_description">Mark the dishes you love and come back to them any time.</string>
 
+    <string name="onboarding_badge_world">Global flavors</string>
+    <string name="onboarding_badge_dishes">50 dishes</string>
+    <string name="onboarding_badge_time">25 min</string>
+
     <string name="home_title">Recipes</string>
     <string name="home_placeholder">Recipes from the API will appear here in the next lab.</string>
     <string name="home_show_intro">Show intro again</string>
