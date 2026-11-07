@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Книга рецептів</string>
+
+    <string name="onboarding_skip">Пропустити</string>
+    <string name="onboarding_next">Далі</string>
+    <string name="onboarding_start">Розпочати</string>
+    <string name="onboarding_page_indicator">Сторінка %1$d з %2$d</string>
+
+    <string name="onboarding_welcome_title">Ласкаво просимо до Книги рецептів</string>
+    <string name="onboarding_welcome_description">Ваш кишеньковий кулінарний довідник зі стравами з усього світу.</string>
+    <string name="onboarding_search_title">Швидкий пошук страв</string>
+    <string name="onboarding_search_description">Шукайте за назвою, кухнею чи типом прийому їжі: від швидких сніданків до святкових вечер.</string>
+    <string name="onboarding_cook_title">Готуйте впевнено</string>
+    <string name="onboarding_cook_description">Кожен рецепт містить інгредієнти, покрокову інструкцію, час приготування та складність.</string>
+    <string name="onboarding_favorites_title">Зберігайте улюблене</string>
+    <string name="onboarding_favorites_description">Позначайте страви, які вам сподобались, і повертайтеся до них будь-коли.</string>
+
+    <string name="home_title">Рецепти</string>
+    <string name="home_placeholder">Рецепти з API будуть тут у наступній лабораторній.</string>
+    <string name="home_show_intro">Показати вступ ще раз</string>
+</resources>
