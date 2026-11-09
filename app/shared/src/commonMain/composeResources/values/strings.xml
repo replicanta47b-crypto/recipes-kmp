@@ -22,4 +22,21 @@
     <string name="home_title">Recipes</string>
     <string name="home_placeholder">Recipes from the API will appear here in the next lab.</string>
     <string name="home_show_intro">Show intro again</string>
+
+    <string name="auth_title">Welcome back</string>
+    <string name="auth_subtitle">Sign in to open your recipes</string>
+    <string name="auth_username_label">Username</string>
+    <string name="auth_password_label">Password</string>
+    <string name="auth_sign_in">Sign in</string>
+    <string name="auth_show_password">Show</string>
+    <string name="auth_hide_password">Hide</string>
+    <string name="auth_username_error_empty">Enter your username</string>
+    <string name="auth_username_error_too_short">Username must be at least 3 characters</string>
+    <string name="auth_username_error_too_long">Username must be at most 30 characters</string>
+    <string name="auth_username_error_invalid_characters">Use only letters, digits, dot, underscore or hyphen</string>
+    <string name="auth_password_error_empty">Enter your password</string>
+    <string name="auth_password_error_too_short">Password must be at least 6 characters</string>
+    <string name="auth_password_error_too_long">Password must be at most 64 characters</string>
+
+    <string name="home_sign_out">Sign out</string>
 </resources>

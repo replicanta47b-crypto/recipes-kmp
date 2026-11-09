@@ -9,21 +9,44 @@ import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.restapi.ui.common.ObserveEvents
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import restapi.app.shared.generated.resources.Res
 import restapi.app.shared.generated.resources.home_placeholder
 import restapi.app.shared.generated.resources.home_show_intro
+import restapi.app.shared.generated.resources.home_sign_out
 import restapi.app.shared.generated.resources.home_title
 
-/** Placeholder: the list of recipes from dummyjson will be built here in the next lab. */
 @Composable
-fun HomeScreen(
+internal fun HomeRoute(
+    onNavigateToOnboarding: () -> Unit,
+    onSignOut: () -> Unit,
+    viewModel: HomeViewModel = koinViewModel(),
+) {
+    ObserveEvents(viewModel.events) { event ->
+        when (event) {
+            HomeEvent.NavigateToOnboarding -> onNavigateToOnboarding()
+        }
+    }
+
+    HomeScreen(
+        onShowIntroAgain = { viewModel.onAction(HomeAction.ShowIntroAgain) },
+        onSignOut = onSignOut,
+    )
+}
+
+/** Placeholder: the list of recipes from dummyjson will be built here in a later lab. */
+@Composable
+internal fun HomeScreen(
     onShowIntroAgain: () -> Unit,
+    onSignOut: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -48,6 +71,9 @@ fun HomeScreen(
         )
         OutlinedButton(onClick = onShowIntroAgain) {
             Text(stringResource(Res.string.home_show_intro))
+        }
+        TextButton(onClick = onSignOut) {
+            Text(stringResource(Res.string.home_sign_out))
         }
     }
 }

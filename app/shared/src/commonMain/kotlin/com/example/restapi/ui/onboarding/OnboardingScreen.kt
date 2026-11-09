@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -37,8 +38,10 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import co.touchlab.kermit.Logger
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.restapi.ui.common.ObserveEvents
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import restapi.app.shared.generated.resources.Res
@@ -48,11 +51,26 @@ import restapi.app.shared.generated.resources.onboarding_page_indicator
 import restapi.app.shared.generated.resources.onboarding_skip
 import restapi.app.shared.generated.resources.onboarding_start
 
-private val log = Logger.withTag("Onboarding")
+@Composable
+internal fun OnboardingRoute(
+    onNavigateToAuth: () -> Unit,
+    viewModel: OnboardingViewModel = koinViewModel(),
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ObserveEvents(viewModel.events) { event ->
+        when (event) {
+            OnboardingEvent.NavigateToAuth -> onNavigateToAuth()
+        }
+    }
+
+    OnboardingScreen(state = state, onAction = viewModel::onAction)
+}
 
 @Composable
-fun OnboardingScreen(
-    onFinished: () -> Unit,
+internal fun OnboardingScreen(
+    state: OnboardingState,
+    onAction: (OnboardingAction) -> Unit,
     modifier: Modifier = Modifier,
     slides: List<OnboardingSlide> = onboardingSlides,
 ) {
@@ -62,7 +80,7 @@ fun OnboardingScreen(
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
-            log.d { "Slide ${page + 1} of ${slides.size} shown" }
+            onAction(OnboardingAction.PageChanged(page))
         }
     }
 
@@ -80,10 +98,10 @@ fun OnboardingScreen(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (!isLastPage) {
-                TextButton(onClick = {
-                    log.i { "Onboarding skipped on slide ${pagerState.currentPage + 1}" }
-                    onFinished()
-                }) {
+                TextButton(
+                    enabled = !state.isCompleting,
+                    onClick = { onAction(OnboardingAction.Skip) },
+                ) {
                     Text(
                         stringResource(Res.string.onboarding_skip),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -105,10 +123,10 @@ fun OnboardingScreen(
 
         Button(
             modifier = Modifier.fillMaxWidth().height(56.dp),
+            enabled = !state.isCompleting,
             onClick = {
                 if (isLastPage) {
-                    log.i { "Onboarding finished" }
-                    onFinished()
+                    onAction(OnboardingAction.Finish)
                 } else {
                     scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
                 }
