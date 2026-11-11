@@ -39,4 +39,13 @@
     <string name="auth_password_error_too_long">Пароль має містити не більше 64 символів</string>
 
     <string name="home_sign_out">Вийти</string>
+
+    <string name="home_greeting">Привіт, %1$s!</string>
+
+    <string name="error_invalid_credentials">Неправильне ім\'я користувача або пароль</string>
+    <string name="error_session_expired">Сеанс завершився. Увійдіть знову</string>
+    <string name="error_network">Немає зʼєднання з сервером. Перевірте інтернет</string>
+    <string name="error_timeout">Сервер відповідає надто довго. Спробуйте ще раз</string>
+    <string name="error_server">Помилка сервера. Спробуйте пізніше</string>
+    <string name="error_unknown">Щось пішло не так. Спробуйте ще раз</string>
 </resources>

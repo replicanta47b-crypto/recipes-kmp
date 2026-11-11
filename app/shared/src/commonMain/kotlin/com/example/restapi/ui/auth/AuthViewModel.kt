@@ -1,9 +1,12 @@
 package com.example.restapi.ui.auth
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
+import com.example.restapi.domain.auth.LoginUseCase
 import com.example.restapi.domain.auth.ValidatePasswordUseCase
 import com.example.restapi.domain.auth.ValidateUsernameUseCase
+import com.example.restapi.domain.common.AppResult
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,10 +14,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 internal class AuthViewModel(
     private val validateUsername: ValidateUsernameUseCase,
     private val validatePassword: ValidatePasswordUseCase,
+    private val login: LoginUseCase,
 ) : ViewModel() {
 
     private val log = Logger.withTag("AuthViewModel")
@@ -58,9 +63,20 @@ internal class AuthViewModel(
             )
         }
         if (usernameError == null && passwordError == null) {
-            // The credentials are only validated here: the real request to the server comes in a later lab.
+            if (current.isLoading) return // a double tap must not send two requests
             log.i { "Sign in requested for '${current.username}'" }
-            _events.trySend(AuthEvent.SignedIn)
+            viewModelScope.launch {
+                _state.update { it.copy(isLoading = true) }
+                val result = login(current.username, current.password)
+                _state.update { it.copy(isLoading = false) }
+                when (result) {
+                    is AppResult.Success -> _events.send(AuthEvent.SignedIn)
+                    is AppResult.Failure -> {
+                        log.w { "Sign in failed: ${result.error}" }
+                        _events.send(AuthEvent.ShowError(result.error))
+                    }
+                }
+            }
         } else {
             log.d { "Sign in rejected: username=$usernameError, password=$passwordError" }
         }

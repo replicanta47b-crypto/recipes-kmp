@@ -39,4 +39,13 @@
     <string name="auth_password_error_too_long">Password must be at most 64 characters</string>
 
     <string name="home_sign_out">Sign out</string>
+
+    <string name="home_greeting">Hello, %1$s!</string>
+
+    <string name="error_invalid_credentials">Wrong username or password</string>
+    <string name="error_session_expired">Your session has expired. Please sign in again</string>
+    <string name="error_network">No connection to the server. Check your internet</string>
+    <string name="error_timeout">The server took too long to respond. Try again</string>
+    <string name="error_server">Server error. Try again later</string>
+    <string name="error_unknown">Something went wrong. Try again</string>
 </resources>

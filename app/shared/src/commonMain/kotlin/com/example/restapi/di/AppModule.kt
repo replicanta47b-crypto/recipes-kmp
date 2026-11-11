@@ -1,6 +1,15 @@
 package com.example.restapi.di
 
+import com.example.restapi.data.auth.AuthRepositoryImpl
+import com.example.restapi.data.network.createHttpClient
 import com.example.restapi.data.onboarding.SettingsOnboardingRepository
+import com.example.restapi.data.security.SecureTokenStorage
+import com.example.restapi.domain.auth.AuthRepository
+import com.example.restapi.domain.auth.GetCurrentUserUseCase
+import com.example.restapi.domain.auth.IsAuthorizedUseCase
+import com.example.restapi.domain.auth.LoginUseCase
+import com.example.restapi.domain.auth.LogoutUseCase
+import com.example.restapi.domain.auth.TokenStorage
 import com.example.restapi.domain.auth.ValidatePasswordUseCase
 import com.example.restapi.domain.auth.ValidateUsernameUseCase
 import com.example.restapi.domain.onboarding.CompleteOnboardingUseCase
@@ -22,6 +31,9 @@ internal val appModule = module {
     // data
     single<Settings> { Settings() }
     singleOf(::SettingsOnboardingRepository) { bind<OnboardingRepository>() }
+    singleOf(::SecureTokenStorage) { bind<TokenStorage>() }
+    single { createHttpClient(get()) }
+    singleOf(::AuthRepositoryImpl) { bind<AuthRepository>() }
 
     // domain
     factoryOf(::IsOnboardingCompletedUseCase)
@@ -29,6 +41,10 @@ internal val appModule = module {
     factoryOf(::ResetOnboardingUseCase)
     factoryOf(::ValidateUsernameUseCase)
     factoryOf(::ValidatePasswordUseCase)
+    factoryOf(::LoginUseCase)
+    factoryOf(::LogoutUseCase)
+    factoryOf(::GetCurrentUserUseCase)
+    factoryOf(::IsAuthorizedUseCase)
 
     // presentation
     viewModelOf(::MainViewModel)

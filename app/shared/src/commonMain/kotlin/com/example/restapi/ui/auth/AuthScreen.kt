@@ -19,6 +19,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -27,6 +30,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +50,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.restapi.domain.auth.PasswordError
 import com.example.restapi.domain.auth.UsernameError
 import com.example.restapi.ui.common.ObserveEvents
+import com.example.restapi.ui.common.message
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -72,14 +80,27 @@ internal fun AuthRoute(
     viewModel: AuthViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     ObserveEvents(viewModel.events) { event ->
         when (event) {
             AuthEvent.SignedIn -> onSignedIn()
+            is AuthEvent.ShowError -> scope.launch {
+                // A new error replaces the one still on the screen instead of waiting in a queue.
+                snackbarHostState.currentSnackbarData?.dismiss()
+                snackbarHostState.showSnackbar(getString(event.error.message()))
+            }
         }
     }
 
-    AuthScreen(state = state, onAction = viewModel::onAction)
+    Box(Modifier.fillMaxSize()) {
+        AuthScreen(state = state, onAction = viewModel::onAction)
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter).safeContentPadding().imePadding(),
+        )
+    }
 }
 
 @Composable
@@ -155,6 +176,7 @@ internal fun AuthScreen(
             modifier = Modifier.fillMaxWidth(),
             label = { Text(stringResource(Res.string.auth_username_label)) },
             singleLine = true,
+            enabled = !state.isLoading,
             isError = state.usernameError != null,
             supportingText = state.usernameError?.let { { Text(stringResource(it.message())) } },
             shape = RoundedCornerShape(12.dp),
@@ -176,6 +198,7 @@ internal fun AuthScreen(
             modifier = Modifier.fillMaxWidth(),
             label = { Text(stringResource(Res.string.auth_password_label)) },
             singleLine = true,
+            enabled = !state.isLoading,
             isError = state.passwordError != null,
             supportingText = state.passwordError?.let { { Text(stringResource(it.message())) } },
             shape = RoundedCornerShape(12.dp),
@@ -201,12 +224,21 @@ internal fun AuthScreen(
 
         Button(
             onClick = { signIn() },
+            enabled = !state.isLoading,
             modifier = Modifier.fillMaxWidth().height(56.dp),
         ) {
-            Text(
-                text = stringResource(Res.string.auth_sign_in),
-                style = MaterialTheme.typography.labelLarge,
-            )
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    strokeWidth = 2.dp,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                )
+            } else {
+                Text(
+                    text = stringResource(Res.string.auth_sign_in),
+                    style = MaterialTheme.typography.labelLarge,
+                )
+            }
         }
     }
 }
