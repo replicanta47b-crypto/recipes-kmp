@@ -4,6 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -49,7 +52,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.restapi.domain.auth.PasswordError
 import com.example.restapi.domain.auth.UsernameError
+import com.example.restapi.ui.common.AdaptiveLayout
 import com.example.restapi.ui.common.ObserveEvents
+import com.example.restapi.ui.common.rememberAdaptiveLayout
 import com.example.restapi.ui.common.message
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
@@ -95,7 +100,7 @@ internal fun AuthRoute(
     }
 
     Box(Modifier.fillMaxSize()) {
-        AuthScreen(state = state, onAction = viewModel::onAction)
+        AuthScreen(state = state, onAction = viewModel::onAction, layout = rememberAdaptiveLayout())
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier.align(Alignment.BottomCenter).safeContentPadding().imePadding(),
@@ -108,6 +113,7 @@ internal fun AuthScreen(
     state: AuthState,
     onAction: (AuthAction) -> Unit,
     modifier: Modifier = Modifier,
+    layout: AdaptiveLayout = AdaptiveLayout(),
 ) {
     val focusManager = LocalFocusManager.current
     val keyboard = LocalSoftwareKeyboardController.current
@@ -119,6 +125,102 @@ internal fun AuthScreen(
         onAction(AuthAction.SignIn)
     }
 
+    if (layout.isSplit) {
+        // Wide window: the brand on the left, the form on the right.
+        Row(
+            modifier = modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .safeContentPadding(),
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                    .padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                AuthHeader(compact = layout.isCompactHeight)
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .imePadding()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 32.dp, vertical = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                AuthForm(state, onAction, signIn, Modifier.widthIn(max = FORM_MAX_WIDTH))
+            }
+        }
+    } else {
+        // Phone in portrait or a tablet in portrait: one column; on a wider window it stays centered and
+        // does not stretch over the whole screen.
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .safeContentPadding()
+                .imePadding()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp, vertical = 32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            AuthHeader(compact = layout.isCompactHeight)
+            Spacer(Modifier.height(32.dp))
+            AuthForm(state, onAction, signIn, Modifier.widthIn(max = FORM_MAX_WIDTH))
+        }
+    }
+}
+
+private val FORM_MAX_WIDTH = 440.dp
+
+@Composable
+private fun AuthHeader(compact: Boolean) {
+    Box(
+        modifier = Modifier
+            .size(if (compact) 64.dp else 96.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primaryContainer),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            painter = painterResource(Res.drawable.ic_restaurant),
+            contentDescription = null,
+            modifier = Modifier.size(if (compact) 32.dp else 48.dp),
+            tint = MaterialTheme.colorScheme.primary,
+        )
+    }
+    Spacer(Modifier.height(if (compact) 12.dp else 24.dp))
+    Text(
+        text = stringResource(Res.string.auth_title),
+        style = MaterialTheme.typography.headlineMedium,
+        color = MaterialTheme.colorScheme.onBackground,
+        textAlign = TextAlign.Center,
+    )
+    Spacer(Modifier.height(8.dp))
+    Text(
+        text = stringResource(Res.string.auth_subtitle),
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        textAlign = TextAlign.Center,
+    )
+}
+
+@Composable
+private fun AuthForm(
+    state: AuthState,
+    onAction: (AuthAction) -> Unit,
+    signIn: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val focusManager = LocalFocusManager.current
+
     val fieldColors = OutlinedTextFieldDefaults.colors(
         focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
         unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -128,47 +230,7 @@ internal fun AuthScreen(
         errorBorderColor = MaterialTheme.colorScheme.error,
     )
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .safeContentPadding()
-            .imePadding()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 24.dp, vertical = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Box(
-            modifier = Modifier
-                .size(96.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.ic_restaurant),
-                contentDescription = null,
-                modifier = Modifier.size(48.dp),
-                tint = MaterialTheme.colorScheme.primary,
-            )
-        }
-        Spacer(Modifier.height(24.dp))
-        Text(
-            text = stringResource(Res.string.auth_title),
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = stringResource(Res.string.auth_subtitle),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(32.dp))
-
+    Column(modifier = modifier.fillMaxWidth()) {
         // Username: the keyboard action moves the focus to the password field.
         OutlinedTextField(
             value = state.username,
