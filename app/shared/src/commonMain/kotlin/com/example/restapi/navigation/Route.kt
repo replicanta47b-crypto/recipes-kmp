@@ -17,6 +17,9 @@ internal sealed interface Route : NavKey {
 
     @Serializable
     data object Home : Route
+
+    @Serializable
+    data class RecipeDetail(val id: Int) : Route
 }
 
 /** Non-Android targets have no reflection, so every route is registered explicitly. */
@@ -26,6 +29,7 @@ internal val navSavedStateConfiguration = SavedStateConfiguration {
             subclass(Route.Onboarding::class, Route.Onboarding.serializer())
             subclass(Route.Auth::class, Route.Auth.serializer())
             subclass(Route.Home::class, Route.Home.serializer())
+            subclass(Route.RecipeDetail::class, Route.RecipeDetail.serializer())
         }
     }
 }

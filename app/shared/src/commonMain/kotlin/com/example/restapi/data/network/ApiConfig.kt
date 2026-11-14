@@ -6,6 +6,7 @@ internal object ApiConfig {
     const val LOGIN_PATH = "/auth/login"
     const val REFRESH_PATH = "/auth/refresh"
     const val ME_PATH = "/auth/me"
+    const val RECIPES_PATH = "/recipes"
 
     /**
      * Lifetime of the access token requested from the server.

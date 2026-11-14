@@ -3,6 +3,11 @@ package com.example.restapi.di
 import com.example.restapi.data.auth.AuthRepositoryImpl
 import com.example.restapi.data.network.createHttpClient
 import com.example.restapi.data.onboarding.SettingsOnboardingRepository
+import com.example.restapi.data.recipes.RecipeRepositoryImpl
+import com.example.restapi.domain.recipes.GetRecipeUseCase
+import com.example.restapi.domain.recipes.GetRecipesUseCase
+import com.example.restapi.domain.recipes.RecipeRepository
+import com.example.restapi.ui.recipes.RecipeDetailViewModel
 import com.example.restapi.data.security.SecureTokenStorage
 import com.example.restapi.domain.auth.AuthRepository
 import com.example.restapi.domain.auth.GetCurrentUserUseCase
@@ -34,6 +39,7 @@ internal val appModule = module {
     singleOf(::SecureTokenStorage) { bind<TokenStorage>() }
     single { createHttpClient(get()) }
     singleOf(::AuthRepositoryImpl) { bind<AuthRepository>() }
+    singleOf(::RecipeRepositoryImpl) { bind<RecipeRepository>() }
 
     // domain
     factoryOf(::IsOnboardingCompletedUseCase)
@@ -45,10 +51,13 @@ internal val appModule = module {
     factoryOf(::LogoutUseCase)
     factoryOf(::GetCurrentUserUseCase)
     factoryOf(::IsAuthorizedUseCase)
+    factoryOf(::GetRecipesUseCase)
+    factoryOf(::GetRecipeUseCase)
 
     // presentation
     viewModelOf(::MainViewModel)
     viewModelOf(::OnboardingViewModel)
     viewModelOf(::AuthViewModel)
     viewModelOf(::HomeViewModel)
+    viewModelOf(::RecipeDetailViewModel)
 }

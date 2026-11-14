@@ -19,6 +19,7 @@ import com.example.restapi.navigation.navSavedStateConfiguration
 import com.example.restapi.ui.auth.AuthRoute
 import com.example.restapi.ui.home.HomeRoute
 import com.example.restapi.ui.onboarding.OnboardingRoute
+import com.example.restapi.ui.recipes.RecipeDetailRoute
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -67,7 +68,11 @@ private fun AppNavigation(startDestination: Route, viewModel: MainViewModel) {
                 HomeRoute(
                     onNavigateToOnboarding = { replaceWith(Route.Onboarding) },
                     onNavigateToAuth = { replaceWith(Route.Auth) },
+                    onOpenRecipe = { id -> backStack.add(Route.RecipeDetail(id)) },
                 )
+            }
+            entry<Route.RecipeDetail> { key ->
+                RecipeDetailRoute(id = key.id, onBack = { backStack.removeLastOrNull() })
             }
         },
     )

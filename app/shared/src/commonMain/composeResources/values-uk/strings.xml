@@ -48,4 +48,42 @@
     <string name="error_timeout">Сервер відповідає надто довго. Спробуйте ще раз</string>
     <string name="error_server">Помилка сервера. Спробуйте пізніше</string>
     <string name="error_unknown">Щось пішло не так. Спробуйте ще раз</string>
+
+    <string name="home_overline">Книга рецептів</string>
+    <string name="home_heading">Домашні страви</string>
+    <string name="home_search_hint">Пошук страв, кухонь, інгредієнтів</string>
+    <string name="home_filter_all">Всі</string>
+    <string name="home_empty">Нічого не знайдено. Спробуйте інший запит</string>
+    <string name="home_retry">Спробувати ще раз</string>
+
+    <string name="meal_breakfast">Сніданок</string>
+    <string name="meal_lunch">Обід</string>
+    <string name="meal_dinner">Вечеря</string>
+    <string name="meal_snack">Перекус</string>
+    <string name="meal_dessert">Десерт</string>
+    <string name="meal_appetizer">Закуска</string>
+    <string name="meal_side_dish">Гарнір</string>
+    <string name="meal_beverage">Напій</string>
+
+    <string name="difficulty_easy">Легко</string>
+    <string name="difficulty_medium">Середньо</string>
+    <string name="difficulty_hard">Складно</string>
+
+    <string name="recipe_minutes">%1$d хв</string>
+    <string name="recipe_servings">%1$d порцій</string>
+    <string name="recipe_kcal">%1$d ккал на порцію</string>
+    <string name="recipe_back">Назад</string>
+    <string name="recipe_ingredients">Інгредієнти</string>
+    <string name="recipe_instructions">Приготування</string>
+
+    <string name="filter_meal">Тип страви</string>
+    <string name="filter_cuisine">Кухня</string>
+    <string name="filter_difficulty">Складність</string>
+    <string name="sort_label">Сортування</string>
+    <string name="sort_default">Рекомендовані</string>
+    <string name="sort_rating">Найвищий рейтинг</string>
+    <string name="sort_quickest">Найшвидші</string>
+    <string name="sort_lightest">Найменше калорій</string>
+    <string name="home_clear_filters">Скинути</string>
+    <string name="home_results">%1$d з %2$d рецептів</string>
 </resources>
